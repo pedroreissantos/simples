@@ -1,0 +1,30 @@
+
+  The Simples in Java is under test and may not work correctly!!!
+
+  The files Simples.* and Interp.java are specific to the compiler.
+  Simple hierarchy of Node types to replace C's union.
+  Postfix macros are replaced by Postfix class methods.
+
+  The use of the interpreter is straitforward, after doing 'make':
+  $ java -cp Simples.jar Interp ../examples/tri.spl
+
+  To create i386 executable you must, after doing 'make' here and in the
+  '../runtime/' directory:
+	Compile:	$ java -cp Simples.jar Simples tri.spl
+	     or:	$ java -jar Simples.jar tri.spl
+	Assemble:	$ nasm -felf tri.asm
+	Link:		$ ld -o tri tri.o ../runtime/lib.o ../runtime/linux.o
+	and run:	$ ./tri
+
+  To compile using instruction selection and Postfix:
+	Compile:	$ java -cp Simples.jar Selector tri.spl
+	(then Assemble, Link and run as above)
+  To compile using greedy register allocation and optimized instruction
+  selection, use i386j.l, i386j.y and i386j.brg:
+	Compile:	$ java -cp Simples.jar Optimizer tri.spl
+	(then Assemble, Link and run as above)
+  To create a Postfix debug version:
+  	Compile:	$ java -cp Simples.jar Simples -debug tri.spl
+	Debug:		$ pfd tri.spl
+
+(C)prs, IST 2012

@@ -1,0 +1,22 @@
+
+  The Simples in Java is under test and may not work correctly!!!
+
+  The files Simples.* and Interp.java are specific to the compiler,
+  although the nodes Print, Read, Variable and Assign are too restrictive
+  for use in other more powerfull languages.
+
+  The use of the interpreter is straitforward, after doing 'make':
+  $ java -cp Simples.jar Interp ../examples/tri.spl
+
+  To create i386 executable you must, after doing 'make' here and in the
+  '../lib/' directory:
+	Compile:	$ java -cp Simples.jar Simples tri.spl
+	Assemble:	$ nasm -felf tri.asm
+	Link:		$ ld -o tri tri.o ../runtime/lib.o ../runtime/linux.o
+	and run:	$ ./tri
+
+  To create a Via debug version:
+  	Compile:	$ java -cp Simples.jar Simples -debug tri.spl
+	Debug:		$ viad tri.spl
+
+(C)prs, IST 2006 

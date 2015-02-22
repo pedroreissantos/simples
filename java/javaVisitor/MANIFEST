@@ -1,0 +1,8 @@
+Main-Class: Simples
+Implementation-Title: Simples
+Implementation-Version: Sun Nov  8 19:03:02 WET 2009
+Specified-By: Pedro Reis dos Santos
+Class-Path: jar/antlr-3.2.jar jar/java-cup-v11a-runtime.jar
+Created-By: Pedro Reis dos Santos
+Specification-Title: Compilador de exemplo
+Specification-Version: 8 de Novembro de 2009

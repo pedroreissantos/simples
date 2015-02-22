@@ -1,0 +1,236 @@
+<HTML> <TITLE> COMPILADORES 2001/2002 </TITLE>
+<BODY BGCOLOR="B5BDD6" link=red vlink=green>
+<table border="0" width="100%" cellpadding="5" cellspacing="3">
+  <tr align="left" valign="middle"><td>
+  <IMG ALIGN=left SRC="istlogo.gif" ALT="IST"> </td>
+
+  <TD> <CENTER> <H1>COMPILADORES</H1> <H2>2001/2002</H2>
+  <H3> Departamento de Engenharia Inform&aacute;tica</H3> <BR> <BR>
+
+  <H2>2&ordf Aula de Laborat&oacute;rio: <U>compilador simples: SIMPLE</U></H2>
+
+</CENTER> </TD> </TABLE> <HR size=2 noshade> <BR>
+
+
+<BR>
+<H3>1 - Objectivo</H3>
+<P>
+O objectivo desta aula &eacute; o aluno tomar contacto com um compilador
+muito simples.
+Desta forma torna-se mais f&aacute;cil compreender os processos e mecanismos
+utilizados:
+<OL>
+  <LI>Gera&ccedil;&atilde;o do compilador atrav&eacute;s
+  	compila&ccedil;&atilde;o dos ficheiros que o formam.
+  <LI>Utiliza&ccedil;&atilde;o do compilador gerado para produzir
+  	ficheiros execut&aacute;veis a partir de exemplos dados e
+	outros programas de teste que pretenda usar.
+  <LI>Ganhar sensibilidade aos v&aacute;rios componentes do compilador,
+	estabecendo a liga&ccedil;&atilde;o com os componentes apresentados
+	nas aulas te&oacute;ricas, embora n&atilde;o seja suposto compreender 
+	o seu funcionamento.
+</OL>
+<P>
+
+<H3>2 - A linguagem COMPACT</H3>
+<P>
+A linguagem <B>simple</B> tal como no projecto de avalia&ccedil;&atilde;o
+usa as ferramentas <B>lex</B> e <B>yacc</B>, constroi uma &aacute;rvore
+sint&aacute;ctica e gera c&oacute;digo <B>i386</B> (o <B>interp</B> &eacute; um
+interpretador e o <B>trans</B> &eacute; um tradutor para a linguagem <B>C</B>).
+A linguagem inclui express&otilde;es artim&eacute;ticas e de
+compara&ccedil;&atilde;o, instru&ccedil;&otilde;es condicionais e de ciclo,
+instru&ccedil;&otilde;es de leitura e escrita, bem como
+atribui&ccedil;&otilde;es.
+A sintaxe &eacute; muito semelhante &agrave; da linguagem <B>C</B>, por
+forma a facilitar a sua compreens&atilde;o.
+No entanto, a
+linguagem n&atilde;o suporta fun&ccedil;&otilde;es ou express&otilde;es
+l&oacute;gicas e tem um &uacute;nico tipo de dados (inteiro).
+<P>
+
+<H3>3 - Gera&ccedil;&atilde;o do compilador</H3>
+<P>
+Para a gera&ccedil;&atilde;o do compilador sugere-se a cria&ccedil;&atilde;o
+de uma <TT>Makefile</TT>, que depois de adaptada pode ser utilizada em outros
+projectos, nomeadamente no projecto de avalia&ccedil;&atilde;o.
+<P>
+Antes de gerar o compilador &eacute; necess&aacute;rio instalar a
+<A HREF="comp/">biblioteca de desenvolvimento compiladores</A> (<B>-lcomp</B>),
+os ficheiro de declara&ccedil;&atilde;o (<B>node.h</B>, <B>tabid.h</B> e
+<B>via.h</B>) e a biblioteca de <I>run-time</I> da linguagem (<B>-lsimple</B>).
+Sugere-se a instala&ccedil;&atilde;o de todos os ficheiros acima em <TT>$HOME/lib</TT>,
+para tal basta executar o comando <B>make install</B> no projecto <B>comp</B>,
+disponibilizado no servidor <B>cvs</B>.
+<P>
+O processo de gera&ccedil;&atilde;o do compilador resume-se (a ordem das
+instru&ccedil;&otilde;es &eacute; relevante):
+<OL>
+  <LI>gera&ccedil;&atilde;o do analisador sint&aacute;ctico:
+  	<PRE>
+  	<B>prompt$ </B><I> yacc -dv simple.y</I>
+  	</PRE>
+  <LI>gera&ccedil;&atilde;o do analisador sint&aacute;ctico:
+  	<PRE>
+  	<B>prompt$ </B><I> flex -l simple.l</I>
+  	</PRE>
+  <LI>gera&ccedil;&atilde;o dos ficheiros objecto relocat&aacute;veis:
+  	<PRE>
+  	<B>prompt$ </B><I> gcc -g -c -DYYDEBUG -I$HOME/lib y.tab.c lex.yy.c code.c interp.c trans.c</I>
+  	</PRE>
+  <LI>gera&ccedil;&atilde;o do interpretador:
+  	<PRE>
+  	<B>prompt$ </B><I> gcc -o interp y.tab.o lex.yy.o interp.o -L$HOME/lib -lcomp -lfl</I>
+  	</PRE>
+  <LI>gera&ccedil;&atilde;o do tradutor para <B>C</B>:
+  	<PRE>
+  	<B>prompt$ </B><I> gcc -o trans y.tab.o lex.yy.o trans.o -L$HOME/lib -lcomp -lfl</I>
+  	</PRE>
+  <LI>gera&ccedil;&atilde;o do compilador (gera&ccedil;&atilde;o de c&oacute;digo para i386):
+  	<PRE>
+  	<B>prompt$ </B><I> gcc -o simple y.tab.o lex.yy.o code.o -L$HOME/lib -lcomp -lfl</I>
+  	</PRE>
+</OL>
+<P>
+
+<H3>4 - Execu&ccedil;&atilde;o de aplica&ccedil;&otilde;es escritas em <U>simple</U></H3>
+<P>
+Uma vez produzido o compilador, podemos us&aacute;-lo para produzir programas e
+rotinas.
+Os ficheiros de exemplo disponibilizados s&atilde;o:
+<UL>
+  <LI><B>div.spl</B> imprime os divisores de um n&uacute;mero lido, ou imprime '<B>&Eacute; primo</B>' se for div&iacute;vel apenas pela unidade e por ele pr&oacute;prio.
+  <LI><B>gcd.spl</B> determina e imprime o maior divisor comum entre dois n&uacute;meros introduzidos.
+  <LI><B>tri.spl</B> classifica o tri&acirc;ngulo, dadas as dimens&otilde;es dos seus lados.
+</UL>
+
+Para interpretar um programa escrito em <B>simple</B> basta passar como argumento o ficheiro (com a extens&atilde;o <B>spl</B>) a ser executado:<BR>
+  	<PRE>
+  	<B>prompt$ </B><I> ./interp div.spl</I>
+  	</PRE>
+
+Para traduzir um programa escrito em <B>simple</B> para a linguagem <B>C</B>
+e gerar um execut&aacute;vel pelo compilador de <B>C</B>:<BR>
+  	<PRE>
+  	<B>prompt$ </B><I> ./trans div.spl</I>
+  	<B>prompt$ </B><I> cc -o div div.c</I>
+  	<B>prompt$ </B><I> ./div</I>
+  	</PRE>
+
+Para gerar c&oacute;digo <I>assembly</I> para <B>linux-elf-i386</B>,
+o primeiro passo consiste em compilar um ficheiro fonte para
+produzir o respectivo ficheiro <I>assembly</I>:<BR>
+  	<PRE>
+  	<B>prompt$ </B><I> ./simple div.spl</I>
+  	</PRE>
+  <P>
+  A produ&ccedil;&atilde;o do ficheiro objecto utiliza o <I>assembler</I> <B>nasm</B>:
+  	<PRE>
+  	<B>prompt$ </B><I> nasm -felf div.asm</I>
+  	</PRE>
+    ficando gerado o ficheiro <B>div.o</B>.
+  <P>
+  Para produzir o execut&aacute;vel final &eacute; necess&aacute;rio ligar o ficheiro objecto gerado com uma biblioteca. Tal deve-se ao facto de, na realidade,
+  a execu&ccedil;&atilde;o dos programas n&atilde;o come&ccedil;a pela rotina
+  <B>main</B>, mas pela rotina <B>_start</B>, devendo esta chamar a rotina
+  <B>main</B> depois de ter efectuado as inicia&ccedil;&otilde;es
+  necess&aacute;rias. De igual forma, a rotina <B>_start</B> &eacute;
+  respons&aacute;vel por terminar o processo, quando o programa regressa da
+  rotina <B>main</B>. Notar que o processador continuaria a executar instru&ccedil;&otilde;es, a menos que se passe o controlo ao sistema operativo com o
+  pedido de termina&ccedil;&atilde;o: a chamada ao sistema <B>_exit</B>
+  (semelhante ao <B>exit</B> do <B>C</B>).
+  <P>
+  As rotinas necess&aacute;rias e outras rotinas de uso comum, como rotinas de
+  leitura e impress&atilde;o, est&atilde;o inclu&iacute;das no ficheiro
+  <B>lib.asm</B>.
+  Este ficheiro dever&aacute; ser passado pelo <I>assembler</I>,
+  da mesma forma que o ficheiro <B>div.asm</B>, para produzir o respectivo
+  ficheiro objecto (instalado em <TT>$HOME/lib/lib.o</TT> pelo comando
+  <B>make install</B> do projecto <B>base</B>).
+  <P>
+  O execut&aacute;vel final &eacute; obtido atrav&eacute;s da jun&ccedil;&atilde;o dos dois ficheiros objecto:
+  	<PRE>
+  	<B>prompt$ </B><I> ld -o div div.o $HOME/lib/lib.o</I>
+  	</PRE>
+    O execut&aacute;vel <B>div</B> pode ser executado como qualquer outro
+    programa <B>unix</B>:
+  	<TT>
+  	<B>prompt$ </B><I> ./div</I> <BR>
+	<I>12</I> <B> <P>
+	2 <P>
+	3 <P>
+	4 <P>
+	6 <P>
+  	</B></TT>
+
+<P>
+
+<H3>5 - As entranhas do compilador</H3>
+<P>
+    Tal como descrito nas aulas, o compilador &eacute; constitu&iacute;do por
+    um analisador lexical, um analisador sint&aacute;ctico e uma an&aacute;lise
+    sem&acirc;ntica, quase inexistente neste caso, dada a simplicidade da linguagem.
+    A gera&ccedil;&atilde;o de c&oacute;digo &eacute; efectuada directamente
+    a partir da &aacute;rvore sint&aacute;ctica, sem optimiza&ccedil;&atilde;o
+    de c&oacute;digo.
+    <UL>
+      <LI><B>analisador lexical</B>: como &eacute; sabido o analisador lexical
+      l&ecirc; os caracteres de um ficheiro e agrupa-os em conjuntos,
+      designados lexemas: identificadores, literais (constantes), operadores,
+      terminadores, delimitadores, brancos e coment&aacute;rios, estes dois
+      &uacute;ltimos sem interesse para o resto do compilador.
+      O ficheiro <B>y.tab.h</B> define os lexemas (<I>tokens</I>), com mais
+      de um car&aacute;cter, que o analisador sint&aacute;ctico pede ao
+      analisador lexical.
+      A cada um destes lexemas corresponde uma express&atilde;o regular
+      no ficheiro <B>simple.l</B>, o analisador lexical.
+      Quando a sequ&ecirc;ncia de caracteres de entrada verifica uma
+      determinada express&atilde;o regular, o c&oacute;digo <B>C</B> que
+      lhe est&aacute; associado &eacute; executado. Este c&oacute;digo
+      devolve o n&uacute;mero do lexema encontrado e, caso seja
+      necess&aacute;rio, o seu valor na vari&aacute;vel <B>yylval</B>.
+      <LI><B>analisador sint&aacute;ctico</B>: constitu&iacute;do pelo
+      ficheiro <B>simple.y</B>, define quais os lexemas (com mais de
+      um car&aacute;cter) que necessita (<I>%token</I>), define a
+      prioridade dos operadores (<I>%left, %right e %nonassoc</I>)
+      e uma gram&aacute;tica LALR(1) depois do separador %%.
+      Quando a uma regra verifica a sequ&ecirc;ncia de lexemas de entrada,
+      &eacute; activada e o c&oacute;digo associado &eacute; executado.
+      Este c&oacute;digo pode continuar as verifica&ccedil;&otilde;es
+      sint&aacute;cticas que n&atilde;o foi poss&iacute;vel efectuar na
+      gram&aacute;tica e fazer verifica&ccedil;&otilde;es sem&acirc;nticas,
+      produzindo uma estrutura de dados interm&aacute;dia (uma &aacute;rvore,
+      no exemplo em estudo) ou gerando directamente o c&oacute;digo
+      resultante, se for poss&iacute;vel fazer uma gera&ccedil;&atilde;o
+      dirigida pela sintaxe (linguagens simples).
+      <LI><B>gera&ccedil;&atilde;o de c&oacute;digo interm&eacute;dio</B>:
+      &eacute; efectuada, no ficheiro <B>code.c</B>,
+      percorrendo a &aacute;vore em profundidade e produzindo as 
+      instru&ccedil;&otilde;es de pilha, dependendo das instru&ccedil;&otilde;es
+      da linguagem fonte. Para tal utiliza as rotinas e estruturas declaradas 
+      nos ficheiros <B>node.h</B> (&aacute;rvore sint&aacute;ctica) e
+      <B>tabid.h</B> (tabela de s&iacute;mbolos).
+      <LI><B>gera&ccedil;&atilde;o de c&oacute;digo final</B>: &eacute;
+      efectuada, por <I>macros</I> declaradas no ficheiro <B>via.h</B>,
+      substituindo as
+      instru&ccedil;&otilde;es de pilha pelas equivalentes para <B>i386</B>.
+      Notar que as rotinas, para as declara&ccedil;&otilde;es existentes em
+      <B>node.h</B>, e <B>tabid.h</B>, encontram-se na
+      biblioteca <B>-lcomp</B> (que correspode ao ficheiro
+      <TT>$HOME/lib/libcomp.a</TT>).
+</UL>
+
+Se der uma olhadela pelo c&oacute;digo final produzido, mesmo sem
+compreender completamente as instru&ccedil;&otilde;es do processador,
+verifica que muitas optimiza&ccedil;&otilde;es podem ser efectuadas.
+Mas isso s&oacute; &eacute; tratado l&aacute; mais para o ver&atilde;o...
+
+<P>
+
+<BR><HR>
+<ADDRESS>
+Pedro Reis Santos
+2005-02-02
+</ADDRESS>
+</BODY>
+</HTML>
